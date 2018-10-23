@@ -22,13 +22,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-    	System.out.println("clients...........");
     	clients.inMemory() // 使用in-memory存储
     		.withClient("client")
     		.secret(new BCryptPasswordEncoder().encode("secret"))
-//        	.withClient("client") // client_id
-//        	.secret("secret") // client_secret
-//        	.authorizedGrantTypes("authorization_code") // 该client允许的授权类型
+    		//该client允许的授权类型
         	.authorizedGrantTypes("authorization_code")
         	.scopes("all"); // 允许的授权范围
     }
@@ -36,7 +33,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-       System.out.println("endpoints...........");
        endpoints.tokenStore(new SelfRedisTokenStore(redisConnectionFactory))
        .authenticationManager(authenticationManager);
     }
@@ -44,7 +40,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-    	System.out.println("security...........");
     	//允许表单认证
     	security.allowFormAuthenticationForClients();
     }

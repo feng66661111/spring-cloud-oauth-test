@@ -76,5 +76,7 @@
 
 	<modules>
 		<module>oauth-server</module>
+		<module>resource-server</module>
+		<module>client-info</module>
 	</modules>
 </project>
