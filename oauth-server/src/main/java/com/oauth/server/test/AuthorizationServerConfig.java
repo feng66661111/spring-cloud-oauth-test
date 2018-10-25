@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -19,6 +20,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     AuthenticationManager authenticationManager;
     @Autowired
     RedisConnectionFactory redisConnectionFactory;
+    @Autowired
+    UserDetailsService userDetailsService;
 	
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -26,21 +29,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     		.withClient("client")
     		.secret(new BCryptPasswordEncoder().encode("secret"))
     		//该client允许的授权类型
-        	.authorizedGrantTypes("authorization_code")
+        	.authorizedGrantTypes("authorization_code", "refresh_token")
         	.scopes("all"); // 允许的授权范围
     }
 
     
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-       endpoints.tokenStore(new SelfRedisTokenStore(redisConnectionFactory))
-       .authenticationManager(authenticationManager);
+       endpoints
+       			//.tokenStore(new SelfRedisTokenStore(redisConnectionFactory))
+       			.authenticationManager(authenticationManager)
+       			.userDetailsService(userDetailsService);
     }
 
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
     	//允许表单认证
-    	security.allowFormAuthenticationForClients();
+//    	security.allowFormAuthenticationForClients();
+    	//允许check_token访问
+    	security.tokenKeyAccess("permitAll()")
+    	 .checkTokenAccess("isAuthenticated()");
     }
 }

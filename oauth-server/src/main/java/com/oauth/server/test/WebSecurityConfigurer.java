@@ -2,6 +2,7 @@ package com.oauth.server.test;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
+@Order(100)
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
 
 	@Override
@@ -22,6 +24,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
         http.requestMatchers().antMatchers("/oauth/**","/login/**")
                 .and()
                 .authorizeRequests()
+                .antMatchers("/oauth/**").authenticated()
                 .and()
                 .formLogin().permitAll();
     }
