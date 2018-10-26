@@ -37,14 +37,6 @@ public class ResourceValiController {
 				break;
 			}
 		}
-//		SecurityContext sc = SecurityContextHolder.getContext();
-//		String user = "";
-//		if(sc != null){
-//			Authentication at = sc.getAuthentication();
-//			if(at != null){
-//				user = (String)at.getPrincipal();
-//			}
-//		}
 		if(StringUtils.isNotBlank(tokenValue)){
 			InMemoryTokenStore store = (InMemoryTokenStore)endPoints.getEndpointsConfigurer().getTokenStore();
 			OAuth2AccessToken token = store.readAccessToken(tokenValue);
